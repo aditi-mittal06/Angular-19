@@ -1,10 +1,9 @@
-import type { Routes } from '@angular/router';
-import { WelcomeComponent } from './features/welcome/welcome.component';
-import { appRoutes } from './shared/constants/routes.constant';
+import { Routes } from '@angular/router';
+import { LoginComponent } from './features/auth/login/login.component';
 
 export const routes: Routes = [
   {
-    path: appRoutes.empty,
-    component: WelcomeComponent,
-  },
+    path: '',
+    component: LoginComponent
+  }
 ];
