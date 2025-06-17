@@ -3,18 +3,33 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  background-color: #f5f5f5;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
 }
 
 mat-card {
   max-width: 400px;
   width: 90%;
   padding: 20px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  border-radius: 12px;
 }
 
 mat-card-header {
   justify-content: center;
   margin-bottom: 20px;
+  text-align: center;
+  
+  mat-card-title {
+    font-size: 28px;
+    font-weight: 600;
+    color: #333;
+  }
+  
+  mat-card-subtitle {
+    font-size: 14px;
+    color: #666;
+    margin-top: 8px;
+  }
 }
 
 mat-form-field {
@@ -30,4 +45,44 @@ form {
 button {
   width: 100%;
   margin-top: 16px;
+  height: 48px;
+  font-size: 16px;
+  font-weight: 500;
+  
+  mat-spinner {
+    margin-right: 8px;
+  }
+}
+
+.demo-credentials {
+  margin-top: 24px;
+  padding: 16px;
+  background-color: #f5f5f5;
+  border-radius: 8px;
+  border-left: 4px solid #2196f3;
+  
+  p {
+    margin: 4px 0;
+    font-size: 14px;
+    
+    &:first-child {
+      color: #333;
+      margin-bottom: 8px;
+    }
+    
+    &:not(:first-child) {
+      color: #666;
+    }
+  }
+}
+
+// Custom snackbar styles
+::ng-deep .success-snackbar {
+  background-color: #4caf50 !important;
+  color: white !important;
+}
+
+::ng-deep .error-snackbar {
+  background-color: #f44336 !important;
+  color: white !important;
 }

@@ -1,10 +1,10 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
-import { MatButtonModule } from '@angular/material/button';
-import { MatCardModule } from '@angular/material/card';
+import { Router } from '@angular/router';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { AuthService } from '../../../core/services/auth.service';
+import { MaterialModule } from '../../../shared/modules/material.module';
 
 @Component({
   selector: 'app-login',
@@ -12,18 +12,21 @@ import { MatCardModule } from '@angular/material/card';
   imports: [
     CommonModule,
     ReactiveFormsModule,
-    MatFormFieldModule,
-    MatInputModule,
-    MatButtonModule,
-    MatCardModule
+    MaterialModule // Using the centralized Material module
   ],
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.scss']
 })
 export class LoginComponent {
   loginForm: FormGroup;
+  isLoading = false;
 
-  constructor(private fb: FormBuilder) {
+  constructor(
+    private fb: FormBuilder,
+    private authService: AuthService,
+    private router: Router,
+    private snackBar: MatSnackBar
+  ) {
     this.loginForm = this.fb.group({
       email: [
         '',
@@ -40,9 +43,34 @@ export class LoginComponent {
 
   onSubmit(): void {
     if (this.loginForm.valid) {
-      console.log(this.loginForm.value);
+      this.isLoading = true;
+      const { email, password } = this.loginForm.value;
+      
+      this.authService.login(email, password).subscribe({
+        next: (success) => {
+          this.isLoading = false;
+          if (success) {
+            this.snackBar.open('Login successful!', 'Close', {
+              duration: 3000,
+              panelClass: ['success-snackbar']
+            });
+            this.router.navigate(['/users']);
+          } else {
+            this.snackBar.open('Invalid credentials', 'Close', {
+              duration: 3000,
+              panelClass: ['error-snackbar']
+            });
+          }
+        },
+        error: () => {
+          this.isLoading = false;
+          this.snackBar.open('Login failed. Please try again.', 'Close', {
+            duration: 3000,
+            panelClass: ['error-snackbar']
+          });
+        }
+      });
     } else {
-      // Trigger all validations to show errors
       this.loginForm.markAllAsTouched();
     }
   }

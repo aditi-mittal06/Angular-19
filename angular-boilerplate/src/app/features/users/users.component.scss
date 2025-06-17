@@ -1,0 +1,507 @@
+.users-container {
+  padding: 16px;
+  max-width: 100%;
+  margin: 0 auto;
+
+  @media (min-width: 768px) {
+    padding: 20px;
+    max-width: 1400px;
+  }
+}
+
+// Card Styling
+mat-card {
+  margin-bottom: 20px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+mat-card-header {
+  padding: 20px 24px 16px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+
+  mat-card-title {
+    font-size: 24px;
+    font-weight: 600;
+    margin: 0;
+    color: white;
+  }
+
+  mat-card-subtitle {
+    font-size: 14px;
+    color: rgba(255, 255, 255, 0.8);
+    margin-top: 8px;
+  }
+}
+
+mat-card-content {
+  padding: 0;
+}
+
+// Filter Toggle
+.filter-section {
+  padding: 20px 24px;
+  background: #fafbfc;
+  border-bottom: 1px solid #e0e0e0;
+
+  mat-slide-toggle {
+    font-size: 16px;
+    font-weight: 500;
+
+    ::ng-deep .mat-slide-toggle-label {
+      color: #333;
+    }
+  }
+}
+
+// Loading / Error Sections
+.loading-container,
+.error-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 60px 20px;
+  text-align: center;
+
+  mat-icon {
+    font-size: 48px;
+    margin-bottom: 20px;
+  }
+
+  p {
+    color: #666;
+    font-size: 16px;
+    margin-bottom: 20px;
+  }
+
+  button mat-icon {
+    font-size: 18px;
+    margin-right: 8px;
+  }
+}
+
+// Table Styles
+.table-wrapper {
+  position: relative;
+  overflow: hidden;
+}
+
+.table-container {
+  overflow-x: auto;
+  overflow-y: visible;
+  max-height: 70vh;
+
+  &::-webkit-scrollbar {
+    height: 8px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 4px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: #c1c1c1;
+    border-radius: 4px;
+
+    &:hover {
+      background: #a8a8a8;
+    }
+  }
+}
+
+// Table Structure
+.users-table {
+  width: 100%;
+  min-width: 800px;
+  background: white;
+  border-collapse: separate;
+  border-spacing: 0;
+
+  .table-header-row {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    position: sticky;
+    top: 0;
+    z-index: 10;
+
+    .header-cell {
+      color: white;
+      font-weight: 600;
+      font-size: 14px;
+      padding: 16px 12px;
+
+      .header-content {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+
+        .header-icon {
+          font-size: 18px;
+        }
+      }
+
+      ::ng-deep .mat-sort-header-arrow {
+        color: white;
+      }
+    }
+  }
+
+  .table-data-row {
+    transition: background-color 0.2s ease;
+    border-bottom: 1px solid #e9ecef;
+
+    &:hover {
+      background-color: #f8f9fa;
+    }
+
+    &:nth-child(even) {
+      background-color: #fafbfc;
+
+      &:hover {
+        background-color: #f0f2f5;
+      }
+    }
+
+    .data-cell {
+      padding: 16px 12px;
+      vertical-align: middle;
+    }
+  }
+}
+
+// Column Styling
+.user-name {
+  font-weight: 500;
+  color: #333;
+  font-size: 14px;
+}
+
+.user-email {
+  color: #666;
+  font-size: 13px;
+  word-break: break-word;
+}
+
+.role-cell {
+  .role-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+
+    .role-icon {
+      font-size: 16px;
+    }
+
+    &.role-admin {
+      background: linear-gradient(135deg, #e3f2fd, #bbdefb);
+      color: #1565c0;
+      border: 1px solid #90caf9;
+    }
+
+    &.role-manager {
+      background: linear-gradient(135deg, #f3e5f5, #e1bee7);
+      color: #6a1b9a;
+      border: 1px solid #ce93d8;
+    }
+
+    &.role-user {
+      background: linear-gradient(135deg, #e8f5e8, #c8e6c9);
+      color: #2e7d32;
+      border: 1px solid #a5d6a7;
+    }
+  }
+}
+
+.status-cell {
+  .status-container {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+
+    .status-label {
+      font-size: 12px;
+      font-weight: 600;
+      text-transform: uppercase;
+
+      &.active {
+        color: #4caf50;
+      }
+
+      &.inactive {
+        color: #f44336;
+      }
+    }
+  }
+}
+
+.actions-cell {
+  .actions-container {
+    display: flex;
+    gap: 4px;
+
+    .action-btn {
+      width: 36px;
+      height: 36px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+      transition: all 0.2s ease;
+
+      mat-icon {
+        font-size: 18px;
+      }
+
+      &:hover {
+        transform: scale(1.1);
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+      }
+
+      &.view-btn {
+        color: #2196f3;
+
+        &:hover {
+          background-color: rgba(33, 150, 243, 0.1);
+        }
+      }
+
+      &.edit-btn {
+        color: #ff9800;
+
+        &:hover {
+          background-color: rgba(255, 152, 0, 0.1);
+        }
+      }
+
+      &.delete-btn {
+        color: #f44336;
+
+        &:hover {
+          background-color: rgba(244, 67, 54, 0.1);
+        }
+      }
+    }
+  }
+}
+
+// Empty State
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 80px 20px;
+  text-align: center;
+  background: #fafbfc;
+
+  mat-icon {
+    font-size: 72px;
+    color: #cfd8dc;
+    margin-bottom: 20px;
+  }
+
+  h3 {
+    color: #333;
+    font-size: 20px;
+    font-weight: 500;
+    margin-bottom: 12px;
+  }
+
+  p {
+    color: #666;
+    font-size: 16px;
+    margin-bottom: 24px;
+  }
+
+  button mat-icon {
+    margin-right: 8px;
+    font-size: 18px;
+  }
+}
+
+// Paginator Styling
+.table-paginator {
+  background: #f8f9fa;
+  border-top: 1px solid #e9ecef;
+
+  ::ng-deep .mat-mdc-paginator-container {
+    padding: 16px 24px;
+    min-height: 56px;
+  }
+}
+
+// Responsive Adjustments
+@media (max-width: 1200px) {
+  .users-table {
+    min-width: 700px;
+
+    .header-cell,
+    .data-cell {
+      padding: 12px 8px;
+    }
+
+    .role-badge .role-text {
+      display: none;
+    }
+  }
+}
+
+@media (max-width: 768px) {
+  .users-container {
+    padding: 12px;
+  }
+
+  mat-card-header {
+    padding: 16px 20px 12px;
+
+    mat-card-title {
+      font-size: 20px;
+    }
+  }
+
+  .filter-section {
+    padding: 16px 20px;
+  }
+
+  .users-table {
+    min-width: 600px;
+
+    .header-cell {
+      padding: 12px 6px;
+      font-size: 12px;
+
+      .header-content {
+        gap: 4px;
+
+        .header-icon {
+          font-size: 16px;
+        }
+      }
+    }
+
+    .data-cell {
+      padding: 12px 6px;
+      height: 56px;
+    }
+
+    .user-name,
+    .user-email {
+      font-size: 12px;
+    }
+
+    .role-badge {
+      padding: 4px 8px;
+      font-size: 10px;
+    }
+
+    .status-container {
+      gap: 8px;
+
+      .status-label {
+        font-size: 10px;
+      }
+    }
+
+    .actions-container {
+      gap: 2px;
+
+      .action-btn {
+        width: 32px;
+        height: 32px;
+
+        mat-icon {
+          font-size: 16px;
+        }
+      }
+    }
+  }
+
+  .table-paginator ::ng-deep .mat-mdc-paginator-container {
+    padding: 12px 20px;
+  }
+}
+
+@media (max-width: 600px) {
+  .users-table {
+    min-width: 500px;
+
+    .email-header,
+    .email-cell {
+      display: none;
+    }
+
+    .role-badge .role-icon {
+      display: none;
+    }
+
+    .status-container {
+      flex-direction: column;
+      gap: 4px;
+      align-items: flex-start;
+    }
+  }
+}
+
+@media (max-width: 480px) {
+  .users-table {
+    min-width: 400px;
+
+    .actions-container {
+      flex-direction: column;
+      gap: 2px;
+
+      .action-btn {
+        width: 28px;
+        height: 28px;
+
+        mat-icon {
+          font-size: 14px;
+        }
+      }
+    }
+
+    .data-cell {
+      height: auto;
+      min-height: 48px;
+    }
+
+    .actions-cell {
+      width: 40px;
+    }
+  }
+}
+
+// Snackbar & Tooltip
+::ng-deep .error-snackbar {
+  background-color: #f44336 !important;
+  color: white !important;
+}
+
+::ng-deep .success-snackbar {
+  background-color: #4caf50 !important;
+  color: white !important;
+}
+
+::ng-deep .mat-mdc-tooltip {
+  background: rgba(0, 0, 0, 0.9);
+  color: white;
+  font-size: 12px;
+  border-radius: 4px;
+}
+
+// Sort header fix
+::ng-deep .mat-sort-header-container {
+  display: flex;
+  align-items: center;
+}
+
+::ng-deep .mat-sort-header-content {
+  display: flex;
+  align-items: center;
+}
