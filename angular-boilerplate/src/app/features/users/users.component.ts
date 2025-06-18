@@ -1,20 +1,16 @@
 import { Component, OnInit, ViewChild, AfterViewInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { MatTableModule, MatTableDataSource } from '@angular/material/table';
-import { MatPaginatorModule, MatPaginator } from '@angular/material/paginator';
-import { MatSortModule, MatSort } from '@angular/material/sort';
-import { MatSlideToggleModule } from '@angular/material/slide-toggle';
-import { MatIconModule } from '@angular/material/icon';
-import { MatButtonModule } from '@angular/material/button';
-import { MatTooltipModule } from '@angular/material/tooltip';
-import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { MatSnackBarModule, MatSnackBar } from '@angular/material/snack-bar';
-import { MatDialogModule, MatDialog } from '@angular/material/dialog';
-import { MatCardModule } from '@angular/material/card';
+import { MatTableDataSource } from '@angular/material/table';
+import { MatPaginator } from '@angular/material/paginator';
+import { MatSort } from '@angular/material/sort';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { MatDialog } from '@angular/material/dialog';
 import { User } from '../../models/user.model';
 import { UserService } from '../../core/services/user.service';
 import { MaterialModule } from '../../shared/modules/material.module';
 import { ConfirmDialogComponent } from '../../shared/components/confirm-dialog/confirm-dialog.component';
+import { AddEditUserComponent } from '../../shared/components/add-edit-user/add-edit-user.component';
+import { AddEditUserDialogData, UserRole } from '../../models/add-edit-user.model';
 
 @Component({
   selector: 'app-users',
@@ -22,7 +18,8 @@ import { ConfirmDialogComponent } from '../../shared/components/confirm-dialog/c
   imports: [
     CommonModule,
     MaterialModule,
-    ConfirmDialogComponent
+    ConfirmDialogComponent,
+    AddEditUserComponent
   ],
   templateUrl: './users.component.html',
   styleUrls: ['./users.component.scss']
@@ -33,6 +30,7 @@ export class UsersComponent implements OnInit, AfterViewInit {
   isLoading = false;
   showActiveOnly = true;
   error: string | null = null;
+  currentUserRole: UserRole = UserRole.ADMIN; // In real app, get from auth service
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
@@ -45,11 +43,17 @@ export class UsersComponent implements OnInit, AfterViewInit {
 
   ngOnInit(): void {
     this.loadUsers();
+    this.getCurrentUserRole();
   }
 
   ngAfterViewInit(): void {
     this.dataSource.paginator = this.paginator;
     this.dataSource.sort = this.sort;
+  }
+
+  private getCurrentUserRole(): void {
+    // In a real application, get this from the authentication service
+    this.currentUserRole = this.userService.getCurrentUserRole() as UserRole;
   }
 
   loadUsers(): void {
@@ -84,6 +88,99 @@ export class UsersComponent implements OnInit, AfterViewInit {
 
   onSortChange(): void {
     this.loadUsers();
+  }
+
+  onAddUser(): void {
+    const dialogData: AddEditUserDialogData = {
+      mode: 'add',
+      currentUserRole: this.currentUserRole
+    };
+
+    const dialogRef = this.dialog.open(AddEditUserComponent, {
+      width: '600px',
+      maxWidth: '95vw',
+      disableClose: true,
+      data: dialogData
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result?.success && result?.user) {
+        this.userService.addUser(result.user).subscribe({
+          next: (response) => {
+            if (response.success) {
+              this.snackBar.open(
+                `User ${result.user.firstName} ${result.user.lastName} created successfully`,
+                'Close',
+                { 
+                  duration: 4000,
+                  panelClass: ['success-snackbar']
+                }
+              );
+              this.loadUsers();
+            }
+          },
+          error: (error) => {
+            this.snackBar.open(
+              error === 'Email already exists' 
+                ? 'Email address is already registered' 
+                : 'Failed to create user. Please try again.',
+              'Close',
+              {
+                duration: 4000,
+                panelClass: ['error-snackbar']
+              }
+            );
+          }
+        });
+      }
+    });
+  }
+
+  onEditUser(user: User): void {
+    const dialogData: AddEditUserDialogData = {
+      mode: 'edit',
+      user: user,
+      currentUserRole: this.currentUserRole
+    };
+
+    const dialogRef = this.dialog.open(AddEditUserComponent, {
+      width: '600px',
+      maxWidth: '95vw',
+      disableClose: true,
+      data: dialogData
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result?.success && result?.user) {
+        this.userService.updateUser(user.id, result.user).subscribe({
+          next: (response) => {
+            if (response.success) {
+              this.snackBar.open(
+                `User ${result.user.firstName} ${result.user.lastName} updated successfully`,
+                'Close',
+                { 
+                  duration: 4000,
+                  panelClass: ['success-snackbar']
+                }
+              );
+              this.loadUsers();
+            }
+          },
+          error: (error) => {
+            this.snackBar.open(
+              error === 'Email already exists' 
+                ? 'Email address is already registered' 
+                : 'Failed to update user. Please try again.',
+              'Close',
+              {
+                duration: 4000,
+                panelClass: ['error-snackbar']
+              }
+            );
+          }
+        });
+      }
+    });
   }
 
   onStatusToggle(user: User): void {
@@ -125,21 +222,6 @@ export class UsersComponent implements OnInit, AfterViewInit {
           }
         });
       }
-    });
-  }
-
-  onViewUser(user: User): void {
-    this.snackBar.open(`
-    Viewing details for ${user.firstName} ${user.lastName}`, 'Close', {
-      duration: 2000,
-      panelClass: ['success-snackbar']
-    });
-  }
-
-  onEditUser(user: User): void {
-    this.snackBar.open(`Edit functionality for ${user.firstName} ${user.lastName} - Coming soon!`, 'Close', {
-      duration: 2000,
-      panelClass: ['success-snackbar']
     });
   }
 

@@ -1,0 +1,132 @@
+<div class="add-edit-user-dialog">
+  <div class="dialog-header">
+    <mat-icon [class.add-icon]="isAddMode" [class.edit-icon]="!isAddMode">
+      {{ isAddMode ? 'person_add' : 'edit' }}
+    </mat-icon>
+    <h2 mat-dialog-title>{{ dialogTitle }}</h2>
+  </div>
+
+  <mat-dialog-content>
+    <form [formGroup]="userForm" class="user-form">
+
+      <!-- Email -->
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>{{ fieldConfigs['email'].label }}</mat-label>
+        <input matInput type="email" formControlName="email" [placeholder]="fieldConfigs['email'].placeholder" autocomplete="email">
+        <mat-icon matSuffix>email</mat-icon>
+
+        @if (userForm.get('email')?.invalid && userForm.get('email')?.touched) {
+          <mat-error>
+            @if (userForm.get('email')?.hasError('required')) {
+              Email is required
+            } @else if (userForm.get('email')?.hasError('email')) {
+              Please enter a valid email address
+            } @else if (userForm.get('email')?.hasError('maxlength')) {
+              Email cannot exceed 254 characters
+            }
+          </mat-error>
+        }
+      </mat-form-field>
+
+      <!-- First Name -->
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>{{ fieldConfigs['firstName'].label }}</mat-label>
+        <input matInput type="text" formControlName="firstName" [placeholder]="fieldConfigs['firstName'].placeholder"
+               [maxlength]="fieldConfigs['firstName'].maxLength!" autocomplete="given-name">
+        <mat-icon matSuffix>person</mat-icon>
+        <mat-hint align="end">
+          {{ userForm.get('firstName')?.value?.length || 0 }}/{{ fieldConfigs['firstName'].maxLength }}
+        </mat-hint>
+
+        @if (userForm.get('firstName')?.invalid && userForm.get('firstName')?.touched) {
+          <mat-error>
+            @if (userForm.get('firstName')?.hasError('required')) {
+              First name is required
+            } @else if (userForm.get('firstName')?.hasError('pattern')) {
+              First name can only contain letters, spaces, hyphens, and apostrophes
+            } @else if (userForm.get('firstName')?.hasError('minlength')) {
+              First name must be at least 2 characters long
+            } @else if (userForm.get('firstName')?.hasError('maxlength')) {
+              First name cannot exceed {{ fieldConfigs['firstName'].maxLength }} characters
+            }
+          </mat-error>
+        }
+      </mat-form-field>
+
+      <!-- Last Name -->
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>{{ fieldConfigs['lastName'].label }}</mat-label>
+        <input matInput type="text" formControlName="lastName" [placeholder]="fieldConfigs['lastName'].placeholder"
+               [maxlength]="fieldConfigs['lastName'].maxLength!" autocomplete="family-name">
+        <mat-icon matSuffix>person_outline</mat-icon>
+        <mat-hint align="end">
+          {{ userForm.get('lastName')?.value?.length || 0 }}/{{ fieldConfigs['lastName'].maxLength }}
+        </mat-hint>
+
+        @if (userForm.get('lastName')?.invalid && userForm.get('lastName')?.touched) {
+          <mat-error>
+            @if (userForm.get('lastName')?.hasError('required')) {
+              Last name is required
+            } @else if (userForm.get('lastName')?.hasError('pattern')) {
+              Last name can only contain letters, spaces, hyphens, and apostrophes
+            } @else if (userForm.get('lastName')?.hasError('minlength')) {
+              Last name must be at least 2 characters long
+            } @else if (userForm.get('lastName')?.hasError('maxlength')) {
+              Last name cannot exceed {{ fieldConfigs['lastName'].maxLength }} characters
+            }
+          </mat-error>
+        }
+      </mat-form-field>
+
+      <!-- Role -->
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>{{ fieldConfigs['role'].label }}</mat-label>
+        <mat-select formControlName="role" [placeholder]="fieldConfigs['role'].placeholder">
+          @for (option of availableRoles; track option.value) {
+            <mat-option [value]="option.value" [disabled]="option.disabled" [matTooltip]="option.description" matTooltipPosition="right">
+              <div class="role-option">
+                <mat-icon class="role-icon" [class]="getRoleIconClass(option.value)">
+                  {{ getRoleIcon(option.value) }}
+                </mat-icon>
+                <div class="role-content">
+                  <span class="role-label">{{ option.label }}</span>
+                  <span class="role-description">{{ option.description }}</span>
+                </div>
+              </div>
+            </mat-option>
+          }
+        </mat-select>
+        <mat-icon matSuffix>admin_panel_settings</mat-icon>
+
+        @if (userForm.get('role')?.invalid && userForm.get('role')?.touched) {
+          <mat-error>Role selection is required</mat-error>
+        }
+      </mat-form-field>
+
+      <!-- Role Info -->
+      @if (userForm.get('role')?.value) {
+        <div class="role-info-card">
+          <mat-icon class="info-icon">info</mat-icon>
+          <div class="info-content">
+            <h4>{{ getRoleDisplayName(userForm.get('role')?.value) }} Permissions</h4>
+            <p>{{ getRolePermissionDescription(userForm.get('role')?.value) }}</p>
+          </div>
+        </div>
+      }
+
+    </form>
+  </mat-dialog-content>
+
+  <mat-dialog-actions align="end" class="dialog-actions">
+    <button mat-button type="button" (click)="onCancel()" [disabled]="isLoading">Cancel</button>
+    <button mat-raised-button [color]="isAddMode ? 'primary' : 'accent'" type="submit" (click)="onSubmit()" [disabled]="userForm.invalid || isLoading">
+      @if (isLoading) {
+        <mat-spinner diameter="20" class="button-spinner"></mat-spinner>
+        <span>{{ isAddMode ? 'Creating...' : 'Updating...' }}</span>
+      } @else {
+        <mat-icon>{{ isAddMode ? 'add' : 'save' }}</mat-icon>
+        <span>{{ isAddMode ? 'Create User' : 'Update User' }}</span>
+      }
+    </button>
+  </mat-dialog-actions>
+</div>
